@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VintAgent — AI Agent for Vinted & Vestiaire</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1814;
+    --ink-soft: #4a4540;
+    --ink-muted: #8a8580;
+    --cream: #faf8f4;
+    --warm: #f2ede4;
+    --card: #ffffff;
+    --accent: #c4551a;
+    --accent-soft: #f5ece5;
+    --teal: #1d7a6e;
+    --teal-soft: #e4f2f0;
+    --gold: #b8920a;
+    --gold-soft: #faf3dc;
+    --border: rgba(30,25,20,0.1);
+    --border-strong: rgba(30,25,20,0.2);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 2.5rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--cream);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+
+  .logo-mark {
+    width: 32px;
+    height: 32px;
+    background: var(--ink);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-mark svg { width: 18px; height: 18px; }
+
+  .logo-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .logo-text span { color: var(--accent); }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    font-size: 0.875rem;
+    color: var(--ink-soft);
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--ink); }
+
+  .nav-cta {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .btn {
+    padding: 0.55rem 1.25rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink-soft);
+    border: 1px solid var(--border-strong);
+  }
+
+  .btn-ghost:hover {
+    background: var(--warm);
+    color: var(--ink);
+  }
+
+  .btn-primary {
+    background: var(--ink);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: var(--accent);
+    transform: translateY(-1px);
+  }
+
+  .btn-accent {
+    background: var(--accent);
+    color: white;
+  }
+
+  .btn-accent:hover {
+    background: #b04a14;
+    transform: translateY(-1px);
+  }
+
+  /* HERO */
+  .hero {
+    padding: 5rem 2.5rem 4rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--teal-soft);
+    color: var(--teal);
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.35rem 0.75rem;
+    border-radius: 100px;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--teal);
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 4vw, 3.4rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 1.25rem;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--ink-soft);
+    line-height: 1.7;
+    margin-bottom: 2rem;
+    max-width: 480px;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .hero-trust {
+    margin-top: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .avatars {
+    display: flex;
+  }
+
+  .avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid var(--cream);
+    margin-left: -8px;
+    font-size: 11px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+
+  .avatar:first-child { margin-left: 0; }
+  .av1 { background: #c4551a; }
+  .av2 { background: #1d7a6e; }
+  .av3 { background: #b8920a; }
+  .av4 { background: #5a3ec8; }
+
+  .trust-text {
+    font-size: 0.8rem;
+    color: var(--ink-muted);
+  }
+
+  .trust-text strong { color: var(--ink-soft); }
+
+  /* HERO CARD */
+  .hero-visual {
+    position: relative;
+  }
+
+  .agent-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 32px rgba(26,24,20,0.08);
+  }
+
+  .agent-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .agent-title {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .status-dot {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.75rem;
+    color: var(--teal);
+    font-weight: 500;
+  }
+
+  .status-dot::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--teal);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.3); }
+  }
+
+  .activity-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    padding: 0.5rem 0.6rem;
+    border-radius: var(--radius-sm);
+    background: var(--cream);
+    animation: slideIn 0.4s ease;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .activity-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .icon-vinted { background: #09b1ba20; color: #09b1ba; }
+  .icon-vest { background: #2e5a1c20; color: #2e5a1c; }
+  .icon-ai { background: var(--accent-soft); color: var(--accent); }
+
+  .activity-text { line-height: 1.4; }
+  .activity-time {
+    margin-left: auto;
+    font-size: 0.7rem;
+    color: var(--ink-muted);
+    flex-shrink: 0;
+  }
+
+  .mini-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .mini-stat {
+    text-align: center;
+    padding: 0.6rem 0.4rem;
+    border-radius: var(--radius-sm);
+    background: var(--warm);
+  }
+
+  .mini-stat-val {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--ink);
+    display: block;
+  }
+
+  .mini-stat-label {
+    font-size: 0.68rem;
+    color: var(--ink-muted);
+    display: block;
+    margin-top: 2px;
+  }
+
+  .floating-tag {
+    position: absolute;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.45rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    white-space: nowrap;
+  }
+
+  .tag-1 { top: -16px; right: 24px; color: var(--teal); }
+  .tag-2 { bottom: -14px; left: 16px; color: var(--accent); }
+
+  /* SECTION */
+  section { padding: 4rem 2.5rem; }
+
+  .section-inner { max-width: 1100px; margin: 0 auto; }
+
+  .section-label {
+    font-size: 0.72rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.75rem;
+  }
+
+  h2 em { font-style: italic; color: var(--accent); }
+
+  .section-sub {
+    font-size: 1rem;
+    color: var(--ink-soft);
+    max-width: 520px;
+    line-height: 1.7;
+    margin-bottom: 3rem;
+  }
+
+  /* FEATURES GRID */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+
+  .feature-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .feature-card.fc-teal::before { background: var(--teal); }
+  .feature-card.fc-accent::before { background: var(--accent); }
+  .feature-card.fc-gold::before { background: var(--gold); }
+
+  .feature-card:hover::before { opacity: 1; }
+  .feature-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.07); transform: translateY(-2px); }
+
+  .feature-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+
+  .fi-teal { background: var(--teal-soft); color: var(--teal); }
+  .fi-accent { background: var(--accent-soft); color: var(--accent); }
+  .fi-gold { background: var(--gold-soft); color: var(--gold); }
+
+  .feature-card h3 {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  .feature-card p {
+    font-size: 0.875rem;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+
+  /* HOW IT WORKS */
+  .hiw-section { background: var(--warm); }
+
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    position: relative;
+  }
+
+  .steps-grid::before {
+    content: '';
+    position: absolute;
+    top: 28px;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: var(--border-strong);
+    z-index: 0;
+  }
+
+  .step {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .step-num {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .step h3 {
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+  }
+
+  .step p {
+    font-size: 0.82rem;
+    color: var(--ink-muted);
+    line-height: 1.55;
+  }
+
+  /* DASHBOARD PREVIEW */
+  .dashboard-preview {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+    margin-top: 2rem;
+  }
+
+  .db-topbar {
+    background: var(--ink);
+    padding: 0.75rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .db-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .db-dot-r { background: #e05b5b; }
+  .db-dot-y { background: #e0b85b; }
+  .db-dot-g { background: #5be07b; }
+
+  .db-title {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.5);
+    margin-left: 0.5rem;
+    font-family: 'DM Sans', monospace;
+  }
+
+  .db-body {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+  }
+
+  .db-sidebar {
+    background: var(--warm);
+    border-right: 1px solid var(--border);
+    padding: 1rem 0;
+  }
+
+  .db-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.55rem 1.25rem;
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .db-nav-item:hover, .db-nav-item.active {
+    background: var(--card);
+    color: var(--ink);
+  }
+
+  .db-nav-item.active { font-weight: 500; border-right: 2px solid var(--accent); }
+
+  .db-nav-icon { font-size: 14px; width: 18px; text-align: center; }
+
+  .db-content { padding: 1.5rem; }
+
+  .db-stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .db-stat {
+    background: var(--warm);
+    border-radius: var(--radius-sm);
+    padding: 0.85rem;
+  }
+
+  .db-stat-label {
+    font-size: 0.7rem;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+
+  .db-stat-val {
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--ink);
+    display: block;
+  }
+
+  .db-stat-change {
+    font-size: 0.7rem;
+    color: var(--teal);
+    display: block;
+  }
+
+  .db-table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .db-table-title { font-size: 0.85rem; font-weight: 500; }
+
+  .db-badge {
+    font-size: 0.68rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 100px;
+    font-weight: 500;
+  }
+
+  .badge-active { background: var(--teal-soft); color: var(--teal); }
+  .badge-pending { background: var(--gold-soft); color: var(--gold); }
+  .badge-sold { background: #e8f5e9; color: #2e7d32; }
+
+  .db-listing-row {
+    display: grid;
+    grid-template-columns: 40px 1fr auto auto;
+    gap: 0.75rem;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.8rem;
+  }
+
+  .db-listing-row:last-child { border-bottom: none; }
+
+  .listing-thumb {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    background: var(--warm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  .listing-name { font-weight: 500; font-size: 0.82rem; }
+  .listing-platform { font-size: 0.7rem; color: var(--ink-muted); margin-top: 1px; }
+
+  .listing-price {
+    font-weight: 500;
+    text-align: right;
+    font-size: 0.85rem;
+  }
+
+  /* PLATFORMS */
+  .platform-badges {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+  }
+
+  .platform-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    background: var(--card);
+    color: var(--ink-soft);
+  }
+
+  .pb-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* PRICING */
+  .pricing-section { background: var(--ink); color: white; }
+  .pricing-section .section-label { color: #c4551a; }
+  .pricing-section h2 { color: white; }
+  .pricing-section .section-sub { color: rgba(255,255,255,0.55); }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+
+  .pricing-card {
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 14px;
+    padding: 1.75rem;
+    transition: all 0.2s;
+    background: rgba(255,255,255,0.04);
+  }
+
+  .pricing-card.featured {
+    background: white;
+    color: var(--ink);
+    border-color: white;
+    transform: scale(1.02);
+  }
+
+  .pricing-card:not(.featured):hover {
+    border-color: rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.07);
+  }
+
+  .plan-name {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  .pricing-card:not(.featured) .plan-name { color: rgba(255,255,255,0.5); }
+  .pricing-card.featured .plan-name { color: var(--accent); }
+
+  .plan-price {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+
+  .pricing-card:not(.featured) .plan-price { color: white; }
+
+  .plan-period {
+    font-size: 0.8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .pricing-card:not(.featured) .plan-period { color: rgba(255,255,255,0.4); }
+  .pricing-card.featured .plan-period { color: var(--ink-soft); }
+
+  .plan-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .plan-features li {
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .pricing-card:not(.featured) .plan-features li { color: rgba(255,255,255,0.7); }
+
+  .check {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+  }
+
+  .pricing-card:not(.featured) .check { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); }
+  .pricing-card.featured .check { background: var(--teal-soft); color: var(--teal); }
+
+  .btn-plan {
+    width: 100%;
+    padding: 0.7rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    border: none;
+    transition: all 0.15s;
+  }
+
+  .pricing-card:not(.featured) .btn-plan {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+
+  .pricing-card:not(.featured) .btn-plan:hover { background: rgba(255,255,255,0.18); }
+  .pricing-card.featured .btn-plan { background: var(--ink); color: white; }
+  .pricing-card.featured .btn-plan:hover { background: var(--accent); }
+
+  /* TESTIMONIALS */
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+
+  .testimonial-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem;
+  }
+
+  .stars {
+    color: var(--gold);
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+    letter-spacing: 2px;
+  }
+
+  .testimonial-text {
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    line-height: 1.65;
+    margin-bottom: 1.25rem;
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .author-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+    color: white;
+  }
+
+  .author-name { font-size: 0.82rem; font-weight: 500; }
+  .author-meta { font-size: 0.72rem; color: var(--ink-muted); }
+
+  /* CTA */
+  .cta-section {
+    text-align: center;
+    padding: 5rem 2.5rem;
+    background: var(--warm);
+    border-top: 1px solid var(--border);
+  }
+
+  .cta-section h2 {
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    margin-bottom: 0.75rem;
+  }
+
+  .cta-section p {
+    color: var(--ink-soft);
+    margin-bottom: 2rem;
+    font-size: 1.05rem;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--ink-muted);
+  }
+
+  footer a { color: var(--ink-muted); text-decoration: none; }
+  footer a:hover { color: var(--ink); }
+
+  /* UPLOAD DEMO */
+  .upload-demo {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.75rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  }
+
+  .upload-zone {
+    border: 2px dashed var(--border-strong);
+    border-radius: 10px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 1.25rem;
+  }
+
+  .upload-zone:hover {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  .upload-icon {
+    width: 48px;
+    height: 48px;
+    background: var(--warm);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.75rem;
+    font-size: 22px;
+  }
+
+  .upload-text { font-size: 0.875rem; color: var(--ink-soft); }
+  .upload-text strong { color: var(--accent); cursor: pointer; }
+
+  .ai-output {
+    display: none;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .ai-output.visible { display: flex; }
+
+  .ai-field label {
+    display: block;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--ink-muted);
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+  }
+
+  .ai-field .field-value {
+    background: var(--warm);
+    border-radius: var(--radius-sm);
+    padding: 0.7rem 0.9rem;
+    font-size: 0.875rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    position: relative;
+  }
+
+  .ai-field .field-value .ai-tag {
+    position: absolute;
+    top: 0.4rem;
+    right: 0.6rem;
+    font-size: 0.65rem;
+    background: var(--accent-soft);
+    color: var(--accent);
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+
+  .platform-targets {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .pt-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--ink-soft);
+    transition: all 0.15s;
+  }
+
+  .pt-chip.selected {
+    border-color: var(--teal);
+    background: var(--teal-soft);
+    color: var(--teal);
+  }
+
+  .generate-btn {
+    width: 100%;
+    padding: 0.8rem;
+    background: var(--ink);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .generate-btn:hover { background: var(--accent); transform: translateY(-1px); }
+
+  .loading-bar {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    display: none;
+  }
+
+  .loading-bar.active { display: block; }
+  .loading-bar::after {
+    content: '';
+    display: block;
+    height: 100%;
+    width: 40%;
+    background: var(--accent);
+    border-radius: 2px;
+    animation: loading 1.2s ease infinite;
+  }
+
+  @keyframes loading {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(350%); }
+  }
+
+  /* FAQ */
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .faq-item {
+    background: var(--card);
+    cursor: pointer;
+  }
+
+  .faq-question {
+    padding: 1rem 1.25rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.15s;
+  }
+
+  .faq-question:hover { background: var(--warm); }
+
+  .faq-chevron {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--warm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    flex-shrink: 0;
+    transition: transform 0.2s;
+  }
+
+  .faq-item.open .faq-chevron { transform: rotate(180deg); background: var(--accent-soft); color: var(--accent); }
+
+  .faq-answer {
+    display: none;
+    padding: 0 1.25rem 1rem;
+    font-size: 0.875rem;
+    color: var(--ink-soft);
+    line-height: 1.7;
+  }
+
+  .faq-item.open .faq-answer { display: block; }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; gap: 2rem; }
+    .features-grid { grid-template-columns: 1fr 1fr; }
+    .steps-grid { grid-template-columns: 1fr 1fr; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .testimonials-grid { grid-template-columns: 1fr; }
+    .db-body { grid-template-columns: 1fr; }
+    .db-sidebar { display: none; }
+    nav { padding: 1rem 1.25rem; }
+    section { padding: 3rem 1.25rem; }
+    .hero { padding: 3rem 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M9 2L14.5 5.5V12.5L9 16L3.5 12.5V5.5L9 2Z" stroke="white" stroke-width="1.5" fill="none"/>
+        <circle cx="9" cy="9" r="2.5" fill="white"/>
+      </svg>
+    </div>
+    <span class="logo-text">Vint<span>Agent</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#demo">Demo</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <div class="nav-cta">
+    <button class="btn btn-ghost">Sign in</button>
+    <button class="btn btn-primary">Start free →</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section style="padding: 5rem 2.5rem 4rem;">
+  <div class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">AI Agent · Vinted & Vestiaire</div>
+      <h1>Your AI that <em>sells</em> fashion while you sleep</h1>
+      <p class="hero-sub">VintAgent automatically lists your items on Vinted and Vestiaire Collective — writing descriptions, pricing intelligently, and managing offers. Set it up once, let it run.</p>
+      <div class="hero-actions">
+        <button class="btn btn-accent" style="padding: 0.7rem 1.6rem; font-size: 0.95rem;">Get early access →</button>
+        <button class="btn btn-ghost" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">See it in action</button>
+      </div>
+      <div class="hero-trust">
+        <div class="avatars">
+          <div class="avatar av1">SK</div>
+          <div class="avatar av2">MR</div>
+          <div class="avatar av3">EP</div>
+          <div class="avatar av4">JK</div>
+        </div>
+        <p class="trust-text"><strong>340+ sellers</strong> on the waitlist already</p>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="floating-tag tag-1">✓ Listed on Vinted</div>
+      <div class="agent-card">
+        <div class="agent-header">
+          <span class="agent-title">Agent activity</span>
+          <span class="status-dot">Running</span>
+        </div>
+        <div class="activity-feed" id="activityFeed">
+          <div class="activity-item">
+            <div class="activity-icon icon-ai">✦</div>
+            <div class="activity-text">Generated listing for <strong>Acne Studios coat</strong></div>
+            <span class="activity-time">now</span>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon icon-vest">V</div>
+            <div class="activity-text">Priced at <strong>€89</strong> on Vestiaire (+12% market avg)</div>
+            <span class="activity-time">1m</span>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon icon-vinted">V</div>
+            <div class="activity-text">Cross-listed to <strong>Vinted</strong> automatically</div>
+            <span class="activity-time">1m</span>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon icon-ai">✦</div>
+            <div class="activity-text">Offer received — auto-replied with <strong>counter offer</strong></div>
+            <span class="activity-time">3m</span>
+          </div>
+        </div>
+        <div class="mini-stats">
+          <div class="mini-stat">
+            <span class="mini-stat-val">12</span>
+            <span class="mini-stat-label">Listed today</span>
+          </div>
+          <div class="mini-stat">
+            <span class="mini-stat-val">€647</span>
+            <span class="mini-stat-label">This week</span>
+          </div>
+          <div class="mini-stat">
+            <span class="mini-stat-val">3.2h</span>
+            <span class="mini-stat-label">Time saved</span>
+          </div>
+        </div>
+      </div>
+      <div class="floating-tag tag-2">↑ €89 — above market avg</div>
+    </div>
+  </div>
+</section>
+
+<!-- PLATFORMS -->
+<section style="padding: 1.5rem 2.5rem 3rem;">
+  <div class="section-inner">
+    <p style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-muted); margin-bottom: 1rem;">Supported platforms</p>
+    <div class="platform-badges">
+      <div class="platform-badge"><div class="pb-dot" style="background:#09b1ba"></div> Vinted</div>
+      <div class="platform-badge"><div class="pb-dot" style="background:#1a4722"></div> Vestiaire Collective</div>
+      <div class="platform-badge" style="opacity:0.4;"><div class="pb-dot" style="background:#888"></div> Depop <span style="font-size:0.7rem;margin-left:4px;color:var(--ink-muted)">coming soon</span></div>
+      <div class="platform-badge" style="opacity:0.4;"><div class="pb-dot" style="background:#888"></div> eBay <span style="font-size:0.7rem;margin-left:4px;color:var(--ink-muted)">coming soon</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-inner">
+    <p class="section-label">Core features</p>
+    <h2>Everything your AI agent <em>does for you</em></h2>
+    <p class="section-sub">From photo upload to completed sale — VintAgent handles the entire workflow automatically.</p>
+
+    <div class="features-grid">
+      <div class="feature-card fc-teal">
+        <div class="feature-icon fi-teal">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="11" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="11" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>
+        </div>
+        <h3>Auto-listing & cross-posting</h3>
+        <p>Upload photos once. VintAgent creates and publishes listings on Vinted and Vestiaire simultaneously, with platform-optimised formatting.</p>
+      </div>
+
+      <div class="feature-card fc-accent">
+        <div class="feature-icon fi-accent">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 14l4-4 3 3 5-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>AI price optimisation</h3>
+        <p>The agent scans real-time market data for comparable items and suggests the optimal price to maximise revenue and sell-through speed.</p>
+      </div>
+
+      <div class="feature-card fc-gold">
+        <div class="feature-icon fi-gold">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3v2M10 15v2M3 10h2M15 10h2M5.5 5.5l1.4 1.4M13.1 13.1l1.4 1.4M5.5 14.5l1.4-1.4M13.1 6.9l1.4-1.4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="10" r="3" stroke="currentColor" stroke-width="1.5"/></svg>
+        </div>
+        <h3>AI description writing</h3>
+        <p>GPT-powered descriptions in English and French, tailored to each platform's tone — detailed for Vestiaire, casual for Vinted.</p>
+      </div>
+
+      <div class="feature-card fc-accent">
+        <div class="feature-icon fi-accent">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" stroke="currentColor" stroke-width="1.5"/><path d="M10 7v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Smart offer management</h3>
+        <p>Set your minimum price thresholds. The agent auto-accepts, declines, or counters offers based on your rules — even at 3am.</p>
+      </div>
+
+      <div class="feature-card fc-teal">
+        <div class="feature-icon fi-teal">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="5" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 9h6M7 12h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Background removal & styling</h3>
+        <p>AI automatically removes cluttered backgrounds from your photos and adds clean white or lifestyle-style backgrounds for higher conversion.</p>
+      </div>
+
+      <div class="feature-card fc-gold">
+        <div class="feature-icon fi-gold">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 4h12v8a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" stroke="currentColor" stroke-width="1.5"/><path d="M8 16h4M10 14v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <h3>Performance analytics</h3>
+        <p>Track your listings across both platforms in one dashboard. See views, saves, offers received, and revenue — all in real time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="hiw-section">
+  <div class="section-inner">
+    <p class="section-label">How it works</p>
+    <h2>From wardrobe to <em>cash</em> in 4 steps</h2>
+    <p class="section-sub">VintAgent is designed to require near-zero effort from you after the initial setup.</p>
+
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Connect accounts</h3>
+        <p>Link your Vinted and Vestiaire profiles securely via OAuth. Takes 2 minutes.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Upload photos</h3>
+        <p>Drag and drop your item photos. The AI identifies brand, condition, and category automatically.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Review & approve</h3>
+        <p>Review the AI-generated listing in seconds. Edit anything, or just click publish.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <h3>Agent takes over</h3>
+        <p>The agent monitors offers, relists unsold items, and bumps listings to stay visible.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO / INTERACTIVE -->
+<section id="demo">
+  <div class="section-inner">
+    <p class="section-label">Try it</p>
+    <h2>See the AI in <em>action</em></h2>
+    <p class="section-sub">Drop a photo and watch VintAgent generate a complete listing — description, price suggestion, and platform targets.</p>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
+      <div class="upload-demo">
+        <div class="upload-zone" id="uploadZone" onclick="startDemo()">
+          <div class="upload-icon">📸</div>
+          <p class="upload-text"><strong>Click to upload</strong> or drag a photo</p>
+          <p style="font-size:0.75rem; color: var(--ink-muted); margin-top: 0.3rem;">JPG, PNG up to 10MB</p>
+        </div>
+
+        <div class="loading-bar" id="loadingBar"></div>
+
+        <div class="ai-output" id="aiOutput">
+          <div class="ai-field">
+            <label>Item detected</label>
+            <div class="field-value">Zara oversized blazer, camel — good condition <span class="ai-tag">AI</span></div>
+          </div>
+          <div class="ai-field">
+            <label>Description (EN)</label>
+            <div class="field-value">Beautiful camel oversized blazer from Zara, size M. Barely worn, in great condition. Perfect for autumn/winter layering. No visible stains or damage. <span class="ai-tag">AI</span></div>
+          </div>
+          <div class="ai-field">
+            <label>Suggested price</label>
+            <div class="field-value" style="display:flex; justify-content:space-between; align-items:center;">
+              <span>€28 <span style="color:var(--teal); font-size:0.75rem;">↑ 15% above avg sells</span></span>
+              <span class="ai-tag">AI</span>
+            </div>
+          </div>
+          <div class="ai-field">
+            <label>List on</label>
+            <div class="platform-targets">
+              <div class="pt-chip selected" onclick="toggleChip(this)"><span style="width:6px;height:6px;border-radius:50%;background:currentColor"></span>Vinted</div>
+              <div class="pt-chip selected" onclick="toggleChip(this)"><span style="width:6px;height:6px;border-radius:50%;background:currentColor"></span>Vestiaire</div>
+            </div>
+          </div>
+          <button class="generate-btn" onclick="publishDemo()">✦ Publish listing now</button>
+        </div>
+      </div>
+
+      <!-- DASHBOARD PREVIEW -->
+      <div>
+        <div class="dashboard-preview">
+          <div class="db-topbar">
+            <div class="db-dot db-dot-r"></div>
+            <div class="db-dot db-dot-y"></div>
+            <div class="db-dot db-dot-g"></div>
+            <span class="db-title">vintagent.io/dashboard</span>
+          </div>
+          <div class="db-body">
+            <div class="db-sidebar">
+              <div class="db-nav-item active"><span class="db-nav-icon">▪</span>Listings</div>
+              <div class="db-nav-item"><span class="db-nav-icon">◦</span>Analytics</div>
+              <div class="db-nav-item"><span class="db-nav-icon">◦</span>Offers</div>
+              <div class="db-nav-item"><span class="db-nav-icon">◦</span>Agent rules</div>
+              <div class="db-nav-item"><span class="db-nav-icon">◦</span>Settings</div>
+            </div>
+            <div class="db-content">
+              <div class="db-stats-row">
+                <div class="db-stat">
+                  <span class="db-stat-label">Revenue</span>
+                  <span class="db-stat-val">€1,240</span>
+                  <span class="db-stat-change">↑ 23% this month</span>
+                </div>
+                <div class="db-stat">
+                  <span class="db-stat-label">Active</span>
+                  <span class="db-stat-val">34</span>
+                  <span class="db-stat-change">listings live</span>
+                </div>
+                <div class="db-stat">
+                  <span class="db-stat-label">Offers</span>
+                  <span class="db-stat-val">8</span>
+                  <span class="db-stat-change">pending review</span>
+                </div>
+                <div class="db-stat">
+                  <span class="db-stat-label">Sold</span>
+                  <span class="db-stat-val">21</span>
+                  <span class="db-stat-change">this month</span>
+                </div>
+              </div>
+              <div class="db-table-header">
+                <span class="db-table-title">Recent listings</span>
+                <span class="db-badge badge-active">All platforms</span>
+              </div>
+              <div class="db-listing-row">
+                <div class="listing-thumb">🧥</div>
+                <div>
+                  <div class="listing-name">Acne Studios wool coat</div>
+                  <div class="listing-platform">Vinted · Vestiaire</div>
+                </div>
+                <div><span class="db-badge badge-active">Active</span></div>
+                <div class="listing-price">€89</div>
+              </div>
+              <div class="db-listing-row">
+                <div class="listing-thumb">👗</div>
+                <div>
+                  <div class="listing-name">& Other Stories dress</div>
+                  <div class="listing-platform">Vinted only</div>
+                </div>
+                <div><span class="db-badge badge-sold">Sold</span></div>
+                <div class="listing-price">€32</div>
+              </div>
+              <div class="db-listing-row">
+                <div class="listing-thumb">👜</div>
+                <div>
+                  <div class="listing-name">Mango leather bag</div>
+                  <div class="listing-platform">Vinted · Vestiaire</div>
+                </div>
+                <div><span class="db-badge badge-pending">Offer</span></div>
+                <div class="listing-price">€45</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section style="background: var(--warm);">
+  <div class="section-inner">
+    <p class="section-label">Early users</p>
+    <h2>Sellers <em>love it</em></h2>
+    <div class="testimonials-grid" style="margin-top: 2rem;">
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">"I used to spend 2 hours a week writing descriptions. VintAgent does it in seconds and honestly writes better than I do. My sell-through rate went up immediately."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar" style="background: #c4551a;">SK</div>
+          <div>
+            <div class="author-name">Sara K.</div>
+            <div class="author-meta">450+ items sold on Vinted</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">"The price optimisation alone pays for the subscription. It suggested prices I wouldn't have dared charge, and they sold. Vestiaire buyers just pay more when the listing looks professional."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar" style="background: #1d7a6e;">MR</div>
+          <div>
+            <div class="author-name">Marie R.</div>
+            <div class="author-meta">Vestiaire power seller · Paris</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★☆</div>
+        <p class="testimonial-text">"Cross-listing to both platforms doubled my exposure without doubling my work. The auto-offer feature is brilliant — it closes deals I'd have missed while sleeping."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar" style="background: #5a3ec8;">JK</div>
+          <div>
+            <div class="author-name">Johanna K.</div>
+            <div class="author-meta">Helsinki · Sustainable fashion</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" class="pricing-section">
+  <div class="section-inner">
+    <p class="section-label">Pricing</p>
+    <h2>Simple, honest pricing</h2>
+    <p class="section-sub">Start free, upgrade when it pays for itself — and it will.</p>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="plan-name">Starter</div>
+        <div class="plan-price">Free</div>
+        <div class="plan-period">Forever · 10 listings/month</div>
+        <ul class="plan-features">
+          <li><div class="check">✓</div>10 AI-generated listings/mo</li>
+          <li><div class="check">✓</div>Vinted cross-posting</div></li>
+          <li><div class="check">✓</div>Basic price suggestions</li>
+          <li><div class="check">✓</div>Email support</li>
+        </ul>
+        <button class="btn-plan">Get started free</button>
+      </div>
+
+      <div class="pricing-card featured">
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">€9<span style="font-size:1.2rem; font-weight:400">.99</span></div>
+        <div class="plan-period">per month · billed monthly</div>
+        <ul class="plan-features">
+          <li><div class="check">✓</div>Unlimited listings</li>
+          <li><div class="check">✓</div>Vinted + Vestiaire posting</li>
+          <li><div class="check">✓</div>AI price optimisation</li>
+          <li><div class="check">✓</div>Background removal</li>
+          <li><div class="check">✓</div>Auto offer management</li>
+          <li><div class="check">✓</div>Priority support</li>
+        </ul>
+        <button class="btn-plan">Start 7-day free trial</button>
+      </div>
+
+      <div class="pricing-card">
+        <div class="plan-name">Power</div>
+        <div class="plan-price">€24<span style="font-size:1.2rem; font-weight:400">.99</span></div>
+        <div class="plan-period">per month · for serious sellers</div>
+        <ul class="plan-features">
+          <li><div class="check">✓</div>Everything in Pro</li>
+          <li><div class="check">✓</div>Bulk upload (100+ items)</li>
+          <li><div class="check">✓</div>Multi-account support</li>
+          <li><div class="check">✓</div>Sales analytics & insights</li>
+          <li><div class="check">✓</div>API access</li>
+          <li><div class="check">✓</div>Dedicated onboarding</li>
+        </ul>
+        <button class="btn-plan">Start 7-day free trial</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="section-inner" style="max-width: 700px;">
+    <p class="section-label">FAQ</p>
+    <h2>Common questions</h2>
+    <div class="faq-list" style="margin-top: 2rem;">
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-question">Does VintAgent require access to my Vinted password? <div class="faq-chevron">▼</div></div>
+        <div class="faq-answer">No. VintAgent connects via OAuth — the same secure standard used by "Sign in with Google". You never share your password with us.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-question">Will using a bot violate Vinted's terms of service? <div class="faq-chevron">▼</div></div>
+        <div class="faq-answer">VintAgent acts as an assistant, not an automated bot. Listings are reviewed and approved by you before going live. Our approach mirrors tools like Buffer for social media — widely used and accepted by platforms.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-question">Which languages does the AI write descriptions in? <div class="faq-chevron">▼</div></div>
+        <div class="faq-answer">Currently English and French. German and Dutch support is coming in Q2. You can also set your preferred language per platform.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-question">How accurate is the brand and condition detection? <div class="faq-chevron">▼</div></div>
+        <div class="faq-answer">Our vision model correctly identifies brand and category in ~90% of cases for common brands. You can always correct errors before publishing — the AI output is always editable.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-question">Can I cancel anytime? <div class="faq-chevron">▼</div></div>
+        <div class="faq-answer">Yes. Cancel any time with one click, no questions asked. Your listings remain live after cancellation — we don't delete anything.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <p class="section-label" style="justify-content:center; display:flex;">Join the waitlist</p>
+  <h2>Your wardrobe is a <em>business</em>.<br>Start running it like one.</h2>
+  <p>Join 340+ sellers already on the waitlist. Early access shipping soon.</p>
+  <div style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
+    <button class="btn btn-accent" style="padding: 0.8rem 2rem; font-size: 1rem;">Get early access →</button>
+    <button class="btn btn-ghost">Talk to founder</button>
+  </div>
+  <p style="font-size: 0.75rem; color: var(--ink-muted); margin-top: 1rem;">No credit card required · Free tier available</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div style="display:flex; align-items:center; gap:0.75rem;">
+    <span class="logo-text" style="font-size:1rem;">Vint<span style="color:var(--accent)">Agent</span></span>
+    <span style="color:var(--border-strong)">·</span>
+    <span>AI-powered selling for Vinted & Vestiaire</span>
+  </div>
+  <div style="display:flex; gap:1.5rem;">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Contact</a>
+  </div>
+</footer>
+
+<script>
+function toggleFaq(el) {
+  const wasOpen = el.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!wasOpen) el.classList.add('open');
+}
+
+function toggleChip(el) {
+  el.classList.toggle('selected');
+}
+
+let demoRunning = false;
+
+function startDemo() {
+  if (demoRunning) return;
+  demoRunning = true;
+
+  const zone = document.getElementById('uploadZone');
+  const bar = document.getElementById('loadingBar');
+  const output = document.getElementById('aiOutput');
+
+  zone.style.background = 'var(--accent-soft)';
+  zone.innerHTML = '<div class="upload-icon">🔍</div><p class="upload-text"><strong>Analysing image…</strong></p>';
+  bar.classList.add('active');
+
+  setTimeout(() => {
+    bar.classList.remove('active');
+    output.classList.add('visible');
+    zone.style.background = '';
+    zone.innerHTML = '<div class="upload-icon" style="background:var(--teal-soft); color:var(--teal)">✓</div><p class="upload-text" style="color:var(--teal)"><strong>Image analysed successfully</strong></p><p style="font-size:0.75rem; color: var(--ink-muted); margin-top: 0.3rem;">camel-blazer-zara.jpg</p>';
+  }, 2000);
+}
+
+function publishDemo() {
+  const btn = event.target;
+  btn.textContent = '✓ Published to Vinted & Vestiaire!';
+  btn.style.background = 'var(--teal)';
+  btn.disabled = true;
+
+  const feed = document.getElementById('activityFeed');
+  const newItem = document.createElement('div');
+  newItem.className = 'activity-item';
+  newItem.innerHTML = '<div class="activity-icon icon-ai">✦</div><div class="activity-text">New listing <strong>Zara blazer €28</strong> published</div><span class="activity-time">now</span>';
+  feed.insertBefore(newItem, feed.firstChild);
+  if (feed.children.length > 4) feed.removeChild(feed.lastChild);
+}
+
+// Animate hero numbers periodically
+const listings = [12, 13, 14, 12, 15];
+const revenues = ['€647', '€679', '€712', '€647', '€755'];
+let idx = 0;
+setInterval(() => {
+  idx = (idx + 1) % listings.length;
+  const stats = document.querySelectorAll('.mini-stat-val');
+  if (stats[0]) stats[0].textContent = listings[idx];
+  if (stats[1]) stats[1].textContent = revenues[idx];
+}, 4000);
+</script>
+
+</body>
+</html>
